@@ -24,7 +24,6 @@ import NextLink from 'next/link';
 import { use } from 'react';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import CloseIcon from '@mui/icons-material/Close';
-import Image from 'next/image';
 
 export default function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -213,8 +212,7 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  width: '200px',
-                  height: '200px',
+                  width: '80%',
                   margin: 'auto',
                 }}>
                 <CircularProgress className='text-gray-800 dark:text-white' />
