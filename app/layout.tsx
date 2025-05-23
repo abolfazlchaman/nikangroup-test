@@ -8,6 +8,10 @@ import theme from './theme';
 export const metadata: Metadata = {
   title: 'Nikan Group Test | Abolfazl Chaman',
   description: 'A test project for Nikan Group by Abolfazl Chaman',
+  robots: {
+    index: false,
+    follow: false,
+  },
 };
 
 const roboto = Roboto({
