@@ -19,9 +19,10 @@ export async function GET(
     };
 
     return NextResponse.json(postWithImage);
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch post';
     return NextResponse.json(
-      { error: 'Failed to fetch post' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

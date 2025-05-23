@@ -12,7 +12,7 @@ export async function GET(request: Request) {
     const posts = await response.json();
 
     // Filter posts based on search query
-    const filteredPosts = posts.filter((post: any) => 
+    const filteredPosts = posts.filter((post: { title: string; body: string }) => 
       post.title.toLowerCase().includes(query) || 
       post.body.toLowerCase().includes(query)
     );
@@ -21,7 +21,7 @@ export async function GET(request: Request) {
     const endIndex = startIndex + limit;
     const paginatedPosts = filteredPosts.slice(startIndex, endIndex);
 
-    const postsWithImages: BlogPost[] = paginatedPosts.map((post: any) => ({
+    const postsWithImages: BlogPost[] = paginatedPosts.map((post: { id: number; title: string; body: string }) => ({
       id: post.id,
       title: post.title,
       body: post.body,
@@ -36,9 +36,10 @@ export async function GET(request: Request) {
     };
 
     return NextResponse.json(responseData);
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to search posts';
     return NextResponse.json(
-      { error: 'Failed to search posts' },
+      { error: errorMessage },
       { status: 500 }
     );
   }

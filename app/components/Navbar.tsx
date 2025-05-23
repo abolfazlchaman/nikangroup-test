@@ -64,7 +64,6 @@ function NavbarSkeleton() {
 export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
-  const theme = useTheme();
   const pathname = usePathname();
 
   useEffect(() => {

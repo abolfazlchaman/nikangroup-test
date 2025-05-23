@@ -32,7 +32,7 @@ export async function GET(request: Request) {
     const endIndex = startIndex + limit;
     const paginatedPosts = posts.slice(startIndex, endIndex);
 
-    const postsWithImages: BlogPost[] = paginatedPosts.map((post: any) => ({
+    const postsWithImages: BlogPost[] = paginatedPosts.map((post: { id: number; title: string; body: string }) => ({
       id: post.id,
       title: post.title,
       body: post.body,
@@ -47,9 +47,10 @@ export async function GET(request: Request) {
     };
 
     return NextResponse.json(responseData);
-  } catch (error) {
+  } catch (error: unknown) {
+    const errorMessage = error instanceof Error ? error.message : 'Failed to fetch posts';
     return NextResponse.json(
-      { error: 'Failed to fetch posts' },
+      { error: errorMessage },
       { status: 500 }
     );
   }
