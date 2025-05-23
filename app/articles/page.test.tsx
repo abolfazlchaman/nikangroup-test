@@ -41,6 +41,7 @@ describe('Articles Page', () => {
     // Mock router
     (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
+      prefetch: vi.fn(),
     });
     // Mock search params
     (useSearchParams as Mock).mockReturnValue({

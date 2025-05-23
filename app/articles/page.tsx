@@ -89,6 +89,16 @@ function ArticlesContent() {
     fetchPosts();
   }, [page, limit, searchQuery]);
 
+  // Prefetch article pages
+  useEffect(() => {
+    if (!loading && posts.length > 0) {
+      posts.forEach((post) => {
+        const path = `/articles/${post.id}`;
+        router.prefetch(path);
+      });
+    }
+  }, [posts, loading, router]);
+
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
     sessionStorage.setItem('articles_page', value.toString());
@@ -263,14 +273,20 @@ function ArticlesContent() {
                     <Button
                       variant='contained'
                       onClick={() => {
-                        sessionStorage.setItem(
-                          `article_${post.id}`,
-                          JSON.stringify({
-                            ...post,
-                            imageUrl: `https://picsum.photos/seed/${post.id}/1920/1080`,
-                          }),
-                        );
-                        router.push(`/articles/${post.id}`);
+                        const targetPath = `/articles/${post.id}`;
+                        router.prefetch(targetPath);
+                        router.push(targetPath);
+
+                        // Store the data after navigation starts
+                        queueMicrotask(() => {
+                          sessionStorage.setItem(
+                            `article_${post.id}`,
+                            JSON.stringify({
+                              ...post,
+                              imageUrl: `https://picsum.photos/seed/${post.id}/1920/1080`,
+                            }),
+                          );
+                        });
                       }}>
                       Read More
                     </Button>
