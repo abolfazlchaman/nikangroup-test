@@ -7,11 +7,21 @@ import { IconButton, Skeleton } from '@mui/material';
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
-  const { theme, setTheme } = useTheme();
+  const { resolvedTheme, setTheme, theme } = useTheme();
 
   useEffect(() => {
     setMounted(true);
   }, []);
+
+  // Handle initial theme sync
+  useEffect(() => {
+    if (mounted && !theme) {
+      const systemTheme = window.matchMedia('(prefers-color-scheme: dark)').matches
+        ? 'dark'
+        : 'light';
+      setTheme(systemTheme);
+    }
+  }, [mounted, theme, setTheme]);
 
   if (!mounted) {
     return (
@@ -25,7 +35,7 @@ export function ThemeToggle() {
 
   return (
     <IconButton
-      onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
+      onClick={() => setTheme(resolvedTheme === 'dark' ? 'light' : 'dark')}
       sx={{
         color: 'inherit',
         '&:hover': {
@@ -33,7 +43,7 @@ export function ThemeToggle() {
         },
       }}
       aria-label='Toggle theme'>
-      {theme === 'dark' ? (
+      {resolvedTheme === 'dark' ? (
         <LightMode sx={{ color: 'inherit' }} />
       ) : (
         <DarkMode sx={{ color: 'inherit' }} />
