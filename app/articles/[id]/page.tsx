@@ -126,9 +126,19 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
             />
             <IconButton
               onClick={() => setIsImageModalOpen(true)}
-              className='absolute top-0 left-0 bg-background text-foreground z-10 backdrop-blur-sm rounded-full p-2 shadow-lg'
-              size='large'>
-              <ZoomInIcon className='text-2xl' />
+              sx={(theme) => ({
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                bgcolor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                '&:hover': {
+                  bgcolor: theme.palette.action.hover,
+                },
+                zIndex: 10,
+              })}
+              size='medium'>
+              <ZoomInIcon />
             </IconButton>
           </div>
           <CardContent className='max-w-4xl mx-auto px-6 py-8'>
@@ -177,32 +187,48 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
         closeAfterTransition
         BackdropProps={{
           timeout: 500,
-          className: 'bg-black/80',
+          className: 'bg-black/90',
         }}>
         <Fade in={isImageModalOpen}>
-          <Box className='relative max-w-[90vw] max-h-[90vh] overflow-y-auto bg-black/90 rounded-lg p-4 my-4'>
+          <Box className='relative max-w-[90vw] max-h-[90vh] overflow-hidden bg-white dark:bg-gray-900 rounded-lg'>
             <IconButton
               onClick={() => setIsImageModalOpen(false)}
-              className='absolute -top-0 right-0 dark:text-white hover:bg-white/10'
-              size='large'>
+              sx={(theme) => ({
+                position: 'absolute',
+                top: 8,
+                right: 8,
+                bgcolor: theme.palette.background.paper,
+                color: theme.palette.text.primary,
+                '&:hover': {
+                  bgcolor: theme.palette.action.hover,
+                },
+                zIndex: 10,
+              })}
+              size='medium'>
               <CloseIcon />
             </IconButton>
             {!modalImageLoaded && (
-              <Box className='flex items-center justify-center w-full h-[60vh]'>
-                <CircularProgress className='dark:text-white' />
+              <Box
+                sx={{
+                  display: 'flex',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  width: '200px',
+                  height: '200px',
+                  margin: 'auto',
+                }}>
+                <CircularProgress className='text-gray-800 dark:text-white' />
               </Box>
             )}
-            <Box className='relative w-full h-full'>
-              <Image
-                src={post?.imageUrl || ''}
+            <Box className='relative w-full'>
+              <CardMedia
+                component='img'
+                image={post?.imageUrl || ''}
                 alt={post?.title || ''}
                 onLoad={() => setModalImageLoaded(true)}
-                className={`w-full h-full object-contain transition-opacity duration-300 ${
+                className={`w-full h-auto max-h-[90vh] object-contain transition-opacity duration-300 ${
                   modalImageLoaded ? 'opacity-100' : 'opacity-0'
                 }`}
-                width={1200}
-                height={800}
-                priority
               />
             </Box>
           </Box>
