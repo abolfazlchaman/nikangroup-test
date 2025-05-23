@@ -1,9 +1,10 @@
 import { describe, it, expect, vi, beforeEach } from 'vitest';
-import { render, screen, fireEvent, waitFor } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import ArticlesPage from './page';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { ThemeProvider } from '@mui/material/styles';
 import { createTheme } from '@mui/material';
+import type { Mock } from 'vitest';
 
 const theme = createTheme();
 
@@ -35,14 +36,14 @@ describe('Articles Page', () => {
   beforeEach(() => {
     vi.clearAllMocks();
     // Reset sessionStorage mocks
-    (global.sessionStorage.getItem as any).mockImplementation(() => null);
-    (global.sessionStorage.setItem as any).mockImplementation(() => {});
+    (global.sessionStorage.getItem as Mock).mockImplementation(() => null);
+    (global.sessionStorage.setItem as Mock).mockImplementation(() => {});
     // Mock router
-    (useRouter as any).mockReturnValue({
+    (useRouter as Mock).mockReturnValue({
       push: vi.fn(),
     });
     // Mock search params
-    (useSearchParams as any).mockReturnValue({
+    (useSearchParams as Mock).mockReturnValue({
       get: vi.fn().mockReturnValue(''),
     });
   });
@@ -90,7 +91,7 @@ describe('Articles Page', () => {
       total: 1,
     };
 
-    (useSearchParams as any).mockReturnValue({
+    (useSearchParams as Mock).mockReturnValue({
       get: vi.fn().mockReturnValue('test'),
     });
 

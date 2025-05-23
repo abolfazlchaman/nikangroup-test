@@ -51,43 +51,43 @@ export default function ArticlesPage() {
   const searchQuery = searchParams.get('search') || '';
 
   useEffect(() => {
-    fetchPosts();
-  }, [page, limit, searchQuery]);
+    const fetchPosts = async () => {
+      setLoading(true);
+      setImagesLoaded({});
+      try {
+        const endpoint = searchQuery
+          ? `/api/posts/search?q=${encodeURIComponent(searchQuery)}&page=${page}&limit=${limit}`
+          : `/api/posts?page=${page}&limit=${limit}`;
 
-  const fetchPosts = async () => {
-    setLoading(true);
-    setImagesLoaded({});
-    try {
-      const endpoint = searchQuery
-        ? `/api/posts/search?q=${encodeURIComponent(searchQuery)}&page=${page}&limit=${limit}`
-        : `/api/posts?page=${page}&limit=${limit}`;
+        // Check cache first
+        const cacheKey = `${endpoint}`;
+        if (articlesCache.has(cacheKey)) {
+          const cachedData = articlesCache.get(cacheKey)!;
+          setPosts(cachedData.posts);
+          setTotal(cachedData.total);
+          setLoading(false);
+          setIsInitialLoad(false);
+          return;
+        }
 
-      // Check cache first
-      const cacheKey = `${endpoint}`;
-      if (articlesCache.has(cacheKey)) {
-        const cachedData = articlesCache.get(cacheKey)!;
-        setPosts(cachedData.posts);
-        setTotal(cachedData.total);
+        const response = await fetch(endpoint);
+        const data: PaginatedResponse = await response.json();
+
+        // Cache the response
+        articlesCache.set(cacheKey, data);
+
+        setPosts(data.posts);
+        setTotal(data.total);
+      } catch (error) {
+        console.error('Failed to fetch posts:', error);
+      } finally {
         setLoading(false);
         setIsInitialLoad(false);
-        return;
       }
+    };
 
-      const response = await fetch(endpoint);
-      const data: PaginatedResponse = await response.json();
-
-      // Cache the response
-      articlesCache.set(cacheKey, data);
-
-      setPosts(data.posts);
-      setTotal(data.total);
-    } catch (error) {
-      console.error('Failed to fetch posts:', error);
-    } finally {
-      setLoading(false);
-      setIsInitialLoad(false);
-    }
-  };
+    fetchPosts();
+  }, [page, limit, searchQuery]);
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);

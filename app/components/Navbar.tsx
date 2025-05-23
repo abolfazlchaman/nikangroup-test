@@ -7,7 +7,6 @@ import {
   IconButton,
   Box,
   useTheme,
-  useMediaQuery,
   Drawer,
   List,
   ListItem,
@@ -66,7 +65,6 @@ export default function Navbar() {
   const [mobileOpen, setMobileOpen] = useState(false);
   const [mounted, setMounted] = useState(false);
   const theme = useTheme();
-  const isMobile = useMediaQuery(theme.breakpoints.down('md'));
   const pathname = usePathname();
 
   useEffect(() => {

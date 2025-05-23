@@ -24,6 +24,7 @@ import NextLink from 'next/link';
 import { use } from 'react';
 import ZoomInIcon from '@mui/icons-material/ZoomIn';
 import CloseIcon from '@mui/icons-material/Close';
+import Image from 'next/image';
 
 export default function ArticlePage({ params }: { params: Promise<{ id: string }> }) {
   const resolvedParams = use(params);
@@ -192,13 +193,16 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
               </Box>
             )}
             <Box className='relative w-full h-full'>
-              <img
-                src={post?.imageUrl}
-                alt={post?.title}
+              <Image
+                src={post?.imageUrl || ''}
+                alt={post?.title || ''}
                 onLoad={() => setModalImageLoaded(true)}
                 className={`w-full h-full object-contain transition-opacity duration-300 ${
                   modalImageLoaded ? 'opacity-100' : 'opacity-0'
                 }`}
+                width={1200}
+                height={800}
+                priority
               />
             </Box>
           </Box>

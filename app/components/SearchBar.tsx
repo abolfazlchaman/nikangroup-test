@@ -1,15 +1,7 @@
 'use client';
 
 import { useState, useEffect, useRef } from 'react';
-import {
-  TextField,
-  Autocomplete,
-  CircularProgress,
-  Box,
-  Typography,
-  Paper,
-  Divider,
-} from '@mui/material';
+import { TextField, Autocomplete, CircularProgress, Box, Typography, Paper } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import type { BlogPost } from '@/app/types/blog';
 import SearchIcon from '@mui/icons-material/Search';
