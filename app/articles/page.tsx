@@ -17,6 +17,7 @@ import {
   Skeleton,
   Breadcrumbs,
   Link,
+  CircularProgress,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import type { BlogPost, PaginatedResponse } from '@/app/types/blog';
@@ -95,34 +96,44 @@ export default function ArticlesPage() {
             </Select>
           </FormControl>
 
-          <Pagination
-            count={Math.ceil(total / limit)}
-            page={page}
-            onChange={handlePageChange}
-            color='primary'
-            sx={{
-              '& .MuiPaginationItem-root': {
-                color: 'inherit',
-                '&:hover': {
-                  backgroundColor: 'rgba(255, 255, 255, 0.08)',
+          {loading ? (
+            <Box className='flex items-center gap-2'>
+              <CircularProgress
+                size={20}
+                className='dark:text-white'
+              />
+              <Typography className='dark:text-white'>Loading...</Typography>
+            </Box>
+          ) : (
+            <Pagination
+              count={Math.ceil(total / limit)}
+              page={page}
+              onChange={handlePageChange}
+              color='primary'
+              sx={{
+                '& .MuiPaginationItem-root': {
+                  color: 'inherit',
+                  '&:hover': {
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                  },
                 },
-              },
-              '& .Mui-selected': {
-                backgroundColor: 'rgb(25, 118, 210) !important',
-                color: 'white !important',
-                '&:hover': {
-                  backgroundColor: 'rgb(21, 101, 192) !important',
+                '& .Mui-selected': {
+                  backgroundColor: 'rgb(25, 118, 210) !important',
+                  color: 'white !important',
+                  '&:hover': {
+                    backgroundColor: 'rgb(21, 101, 192) !important',
+                  },
                 },
-              },
-              '& .MuiPaginationItem-ellipsis': {
-                color: 'inherit',
-              },
-              '& .MuiPaginationItem-icon': {
-                color: 'inherit',
-              },
-            }}
-            className='dark:text-white'
-          />
+                '& .MuiPaginationItem-ellipsis': {
+                  color: 'inherit',
+                },
+                '& .MuiPaginationItem-icon': {
+                  color: 'inherit',
+                },
+              }}
+              className='dark:text-white'
+            />
+          )}
         </div>
       </div>
 
