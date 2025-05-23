@@ -25,10 +25,23 @@ import { ArticleCardSkeleton } from '@/app/components/ArticleCardSkeleton';
 import { SearchBar } from '@/app/components/SearchBar';
 import NextLink from 'next/link';
 
+// Cache for articles list
+const articlesCache = new Map<string, PaginatedResponse>();
+
 export default function ArticlesPage() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
+  const [page, setPage] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Number(sessionStorage.getItem('articles_page')) || 1;
+    }
+    return 1;
+  });
+  const [limit, setLimit] = useState(() => {
+    if (typeof window !== 'undefined') {
+      return Number(sessionStorage.getItem('articles_limit')) || 10;
+    }
+    return 10;
+  });
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState<{ [key: number]: boolean }>({});
@@ -48,8 +61,24 @@ export default function ArticlesPage() {
       const endpoint = searchQuery
         ? `/api/posts/search?q=${encodeURIComponent(searchQuery)}&page=${page}&limit=${limit}`
         : `/api/posts?page=${page}&limit=${limit}`;
+
+      // Check cache first
+      const cacheKey = `${endpoint}`;
+      if (articlesCache.has(cacheKey)) {
+        const cachedData = articlesCache.get(cacheKey)!;
+        setPosts(cachedData.posts);
+        setTotal(cachedData.total);
+        setLoading(false);
+        setIsInitialLoad(false);
+        return;
+      }
+
       const response = await fetch(endpoint);
       const data: PaginatedResponse = await response.json();
+
+      // Cache the response
+      articlesCache.set(cacheKey, data);
+
       setPosts(data.posts);
       setTotal(data.total);
     } catch (error) {
@@ -62,11 +91,15 @@ export default function ArticlesPage() {
 
   const handlePageChange = (_event: React.ChangeEvent<unknown>, value: number) => {
     setPage(value);
+    sessionStorage.setItem('articles_page', value.toString());
   };
 
   const handleLimitChange = (event: SelectChangeEvent<number>) => {
-    setLimit(Number(event.target.value));
+    const newLimit = Number(event.target.value);
+    setLimit(newLimit);
     setPage(1);
+    sessionStorage.setItem('articles_limit', newLimit.toString());
+    sessionStorage.setItem('articles_page', '1');
   };
 
   const handleImageLoad = (id: number) => {
@@ -228,7 +261,16 @@ export default function ArticlesPage() {
                   <Box className='mt-4'>
                     <Button
                       variant='contained'
-                      onClick={() => router.push(`/articles/${post.id}`)}>
+                      onClick={() => {
+                        sessionStorage.setItem(
+                          `article_${post.id}`,
+                          JSON.stringify({
+                            ...post,
+                            imageUrl: `https://picsum.photos/seed/${post.id}/1920/1080`,
+                          }),
+                        );
+                        router.push(`/articles/${post.id}`);
+                      }}>
                       Read More
                     </Button>
                   </Box>
