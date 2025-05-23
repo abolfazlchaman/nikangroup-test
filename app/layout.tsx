@@ -1,8 +1,9 @@
 import type { Metadata } from 'next';
 import { Providers } from './providers';
-import { Header } from './components/header';
 import './globals.css';
 import { Roboto } from 'next/font/google';
+import Navbar from '@/app/components/Navbar';
+import { Footer } from './components/Footer';
 
 export const metadata: Metadata = {
   title: 'Nikan Group Test | Abolfazl Chaman',
@@ -37,8 +38,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
       className={roboto.variable}>
       <body className='min-h-screen bg-background font-sans antialiased'>
         <Providers>
-          <Header />
+          <Navbar />
           <main className='container mx-auto px-4 py-8'>{children}</main>
+          <Footer />
         </Providers>
       </body>
     </html>
