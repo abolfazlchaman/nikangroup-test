@@ -19,9 +19,10 @@ import {
   Link,
   CircularProgress,
 } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { BlogPost, PaginatedResponse } from '@/app/types/blog';
 import { ArticleCardSkeleton } from '@/app/components/ArticleCardSkeleton';
+import { SearchBar } from '@/app/components/SearchBar';
 import NextLink from 'next/link';
 
 export default function ArticlesPage() {
@@ -31,17 +32,23 @@ export default function ArticlesPage() {
   const [total, setTotal] = useState(0);
   const [loading, setLoading] = useState(true);
   const [imagesLoaded, setImagesLoaded] = useState<{ [key: number]: boolean }>({});
+  const [isInitialLoad, setIsInitialLoad] = useState(true);
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const searchQuery = searchParams.get('search') || '';
 
   useEffect(() => {
     fetchPosts();
-  }, [page, limit]);
+  }, [page, limit, searchQuery]);
 
   const fetchPosts = async () => {
     setLoading(true);
     setImagesLoaded({});
     try {
-      const response = await fetch(`/api/posts?page=${page}&limit=${limit}`);
+      const endpoint = searchQuery
+        ? `/api/posts/search?q=${encodeURIComponent(searchQuery)}&page=${page}&limit=${limit}`
+        : `/api/posts?page=${page}&limit=${limit}`;
+      const response = await fetch(endpoint);
       const data: PaginatedResponse = await response.json();
       setPosts(data.posts);
       setTotal(data.total);
@@ -49,6 +56,7 @@ export default function ArticlesPage() {
       console.error('Failed to fetch posts:', error);
     } finally {
       setLoading(false);
+      setIsInitialLoad(false);
     }
   };
 
@@ -82,60 +90,102 @@ export default function ArticlesPage() {
           </Breadcrumbs>
         </div>
 
-        <div className='flex flex-wrap items-center justify-center gap-6'>
-          <FormControl className='w-48'>
-            <InputLabel className='dark:text-white'>Articles per page</InputLabel>
-            <Select
-              value={limit}
-              label='Articles per page'
-              onChange={handleLimitChange}
-              className='dark:bg-gray-800 dark:text-white'>
-              <MenuItem value={10}>10</MenuItem>
-              <MenuItem value={20}>20</MenuItem>
-              <MenuItem value={50}>50</MenuItem>
-            </Select>
-          </FormControl>
+        <div className='flex flex-col gap-4'>
+          <div className='w-full lg:hidden'>
+            <SearchBar variant='page' />
+          </div>
 
-          {loading ? (
-            <Box className='flex items-center gap-2'>
-              <CircularProgress
-                size={20}
-                className='dark:text-white'
-              />
-              <Typography className='dark:text-white'>Loading...</Typography>
-            </Box>
-          ) : (
-            <Pagination
-              count={Math.ceil(total / limit)}
-              page={page}
-              onChange={handlePageChange}
-              color='primary'
-              sx={{
-                '& .MuiPaginationItem-root': {
-                  color: 'inherit',
-                  '&:hover': {
-                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
-                  },
-                },
-                '& .Mui-selected': {
-                  backgroundColor: 'rgb(25, 118, 210) !important',
-                  color: 'white !important',
-                  '&:hover': {
-                    backgroundColor: 'rgb(21, 101, 192) !important',
-                  },
-                },
-                '& .MuiPaginationItem-ellipsis': {
-                  color: 'inherit',
-                },
-                '& .MuiPaginationItem-icon': {
-                  color: 'inherit',
-                },
-              }}
-              className='dark:text-white'
-            />
-          )}
+          <div className='flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg'>
+            <div className='flex items-center gap-4 w-full sm:w-auto'>
+              <FormControl
+                size='small'
+                className='w-48'>
+                <InputLabel className='dark:text-white'>Articles per page</InputLabel>
+                <Select
+                  value={limit}
+                  label='Articles per page'
+                  onChange={handleLimitChange}
+                  className='dark:bg-gray-800 dark:text-white'>
+                  <MenuItem value={10}>10</MenuItem>
+                  <MenuItem value={20}>20</MenuItem>
+                  <MenuItem value={50}>50</MenuItem>
+                </Select>
+              </FormControl>
+
+              {isInitialLoad ? (
+                <Box className='flex items-center gap-2 hidden sm:flex'>
+                  <CircularProgress
+                    size={20}
+                    className='dark:text-white'
+                  />
+                  <Typography className='dark:text-white text-sm'>Loading...</Typography>
+                </Box>
+              ) : (
+                <Typography className='dark:text-white text-sm whitespace-nowrap hidden lg:block'>
+                  Articles {Math.min((page - 1) * limit + 1, total)}-{Math.min(page * limit, total)}{' '}
+                  from {total}
+                </Typography>
+              )}
+            </div>
+
+            <div className='flex items-center gap-4'>
+              <div className='hidden lg:block w-64 [&_.MuiInputBase-root]:!pt-0 [&_.MuiInputBase-root]:!pb-0 [&_.MuiInputBase-root]:!min-h-0'>
+                <SearchBar variant='page' />
+              </div>
+              {isInitialLoad ? (
+                <Box className='flex items-center gap-2'>
+                  <CircularProgress
+                    size={20}
+                    className='dark:text-white'
+                  />
+                </Box>
+              ) : (
+                <Pagination
+                  count={Math.ceil(total / limit)}
+                  page={page}
+                  onChange={handlePageChange}
+                  color='primary'
+                  size='small'
+                  siblingCount={0}
+                  boundaryCount={1}
+                  sx={{
+                    '& .MuiPaginationItem-root': {
+                      color: 'inherit',
+                      '&:hover': {
+                        backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                      },
+                    },
+                    '& .Mui-selected': {
+                      backgroundColor: 'rgb(25, 118, 210) !important',
+                      color: 'white !important',
+                      '&:hover': {
+                        backgroundColor: 'rgb(21, 101, 192) !important',
+                      },
+                    },
+                    '& .MuiPaginationItem-ellipsis': {
+                      color: 'inherit',
+                    },
+                    '& .MuiPaginationItem-icon': {
+                      color: 'inherit',
+                    },
+                  }}
+                  className='dark:text-white'
+                />
+              )}
+            </div>
+          </div>
         </div>
       </div>
+
+      {searchQuery && !loading && (
+        <Typography
+          variant='h6'
+          className='text-center mb-6 dark:text-white'>
+          {total === 0
+            ? 'No results found'
+            : `Found ${total} ${total === 1 ? 'result' : 'results'} for "${searchQuery}"`}
+        </Typography>
+      )}
 
       <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
         {loading

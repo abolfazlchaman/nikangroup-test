@@ -21,6 +21,7 @@ import MenuIcon from '@mui/icons-material/Menu';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { ThemeToggle } from './theme-toggle';
+import { SearchBar } from './SearchBar';
 
 function NavbarSkeleton() {
   return (
@@ -150,6 +151,12 @@ export default function Navbar() {
           Nikangroup
         </Typography>
         <Box className='hidden md:flex gap-2 items-center'>
+          {pathname !== '/articles' && (
+            <SearchBar
+              variant='navbar'
+              className='w-64'
+            />
+          )}
           {navItems.map((item) => (
             <Link
               key={item.path}
