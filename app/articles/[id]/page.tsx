@@ -12,6 +12,7 @@ import {
   Link,
   Box,
   CircularProgress,
+  Divider,
 } from '@mui/material';
 import { useRouter } from 'next/navigation';
 import type { BlogPost } from '@/app/types/blog';
@@ -87,18 +88,17 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
         <ArticleSkeleton />
       ) : post ? (
         <Card className='dark:bg-gray-800'>
-          <div className='relative h-[400px]'>
+          <div className='relative h-[500px] md:h-[600px]'>
             {!imageLoaded && (
               <Skeleton
                 variant='rectangular'
-                height={400}
+                height='100%'
                 className='dark:bg-gray-700 absolute inset-0'
               />
             )}
             <CardMedia
               component='img'
-              height='400'
-              image={post.imageUrl.replace('/500/300', '/800/400')}
+              image={post.imageUrl}
               alt={post.title}
               onLoad={() => setImageLoaded(true)}
               className={`absolute inset-0 w-full h-full object-cover transition-opacity duration-300 ${
@@ -106,15 +106,23 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
               }`}
             />
           </div>
-          <CardContent>
+          <CardContent className='max-w-4xl mx-auto px-6 py-8'>
             <Typography
               variant='h4'
-              className='dark:text-white mb-4'>
+              className='dark:text-white mb-8 text-justify'
+              sx={{
+                marginY: '4rem',
+              }}>
               {post.title}
+              <Divider
+                sx={{
+                  mt: '1rem',
+                }}
+              />
             </Typography>
             <Typography
               variant='body1'
-              className='dark:text-gray-300 whitespace-pre-line'>
+              className='dark:text-gray-300 whitespace-pre-line text-justify leading-relaxed'>
               {post.body}
             </Typography>
           </CardContent>
