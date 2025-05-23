@@ -3,6 +3,7 @@
 import { useTheme } from 'next-themes';
 import { useEffect, useState } from 'react';
 import { LightMode, DarkMode } from '@mui/icons-material';
+import { IconButton, Skeleton } from '@mui/material';
 
 export function ThemeToggle() {
   const [mounted, setMounted] = useState(false);
@@ -12,27 +13,31 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
-  // Show loading state during server-side rendering
   if (!mounted) {
     return (
-      <button
-        className='w-10 h-10 rounded-md flex items-center justify-center animate-pulse'
-        aria-label='Loading theme'>
-        <div className='h-5 w-5 rounded-full border-2 border-muted-foreground border-t-transparent animate-spin' />
-      </button>
+      <Skeleton
+        variant='circular'
+        width={40}
+        height={40}
+      />
     );
   }
 
   return (
-    <button
+    <IconButton
       onClick={() => setTheme(theme === 'dark' ? 'light' : 'dark')}
-      className='w-10 h-10 rounded-md flex items-center justify-center hover:bg-accent transition-colors'
+      sx={{
+        color: 'inherit',
+        '&:hover': {
+          backgroundColor: 'rgba(255, 255, 255, 0.08)',
+        },
+      }}
       aria-label='Toggle theme'>
       {theme === 'dark' ? (
-        <LightMode className='h-5 w-5 text-muted-foreground' />
+        <LightMode sx={{ color: 'inherit' }} />
       ) : (
-        <DarkMode className='h-5 w-5 text-muted-foreground' />
+        <DarkMode sx={{ color: 'inherit' }} />
       )}
-    </button>
+    </IconButton>
   );
 }
