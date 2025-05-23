@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import {
   Card,
   CardContent,
@@ -28,7 +28,7 @@ import NextLink from 'next/link';
 // Cache for articles list
 const articlesCache = new Map<string, PaginatedResponse>();
 
-export default function ArticlesPage() {
+function ArticlesContent() {
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [page, setPage] = useState(() => {
     if (typeof window !== 'undefined') {
@@ -278,6 +278,79 @@ export default function ArticlesPage() {
                 </CardContent>
               </Card>
             ))}
+      </div>
+    </div>
+  );
+}
+
+export default function ArticlesPage() {
+  return (
+    <Suspense fallback={<ArticleLoadingSkeleton />}>
+      <ArticlesContent />
+    </Suspense>
+  );
+}
+
+function ArticleLoadingSkeleton() {
+  return (
+    <div className='container mx-auto px-4 py-8'>
+      <div className='flex flex-col gap-6 mb-8'>
+        <div className='flex items-center gap-4 mb-4'>
+          <Breadcrumbs
+            aria-label='breadcrumb'
+            className='dark:text-white'>
+            <Link
+              component={NextLink}
+              href='/'
+              className='dark:text-gray-400 hover:dark:text-white'>
+              Home
+            </Link>
+            <Typography className='dark:text-white'>Articles</Typography>
+          </Breadcrumbs>
+        </div>
+
+        <div className='flex flex-col gap-4'>
+          <div className='w-full lg:hidden'>
+            <Skeleton
+              variant='rectangular'
+              height={56}
+              className='dark:bg-gray-700 rounded-lg'
+            />
+          </div>
+
+          <div className='flex flex-col sm:flex-row items-center justify-between gap-4 px-4 py-2 bg-gray-50 dark:bg-gray-800/50 rounded-lg'>
+            <div className='flex items-center gap-4 w-full sm:w-auto'>
+              <Skeleton
+                variant='rectangular'
+                width={192}
+                height={40}
+                className='dark:bg-gray-700 rounded'
+              />
+            </div>
+
+            <div className='flex items-center gap-4'>
+              <div className='hidden lg:block w-64'>
+                <Skeleton
+                  variant='rectangular'
+                  height={40}
+                  className='dark:bg-gray-700 rounded'
+                />
+              </div>
+              <Skeleton
+                variant='rectangular'
+                width={200}
+                height={32}
+                className='dark:bg-gray-700 rounded'
+              />
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
+        {Array.from({ length: 6 }).map((_, index) => (
+          <ArticleCardSkeleton key={index} />
+        ))}
       </div>
     </div>
   );

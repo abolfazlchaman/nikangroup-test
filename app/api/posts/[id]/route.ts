@@ -1,13 +1,15 @@
-import { NextResponse } from 'next/server';
+import { NextRequest, NextResponse } from 'next/server';
 import type { BlogPost } from '@/app/types/blog';
 
 export async function GET(
-  request: Request,
-  { params }: { params: { id: string } }
+  req: NextRequest,
+  { params }: { params: Promise<{ id: string }> }
 ) {
+  const { id } = await params;
+  
   try {
     const response = await fetch(
-      `https://jsonplaceholder.typicode.com/posts/${params.id}`
+      `https://jsonplaceholder.typicode.com/posts/${id}`
     );
     const post = await response.json();
 
