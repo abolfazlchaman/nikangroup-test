@@ -12,12 +12,13 @@ export function ThemeToggle() {
     setMounted(true);
   }, []);
 
+  // Show loading state during server-side rendering
   if (!mounted) {
     return (
       <button
-        className='w-10 h-10 rounded-md flex items-center justify-center'
-        aria-label='Toggle theme'>
-        <LightMode className='h-5 w-5 text-muted-foreground' />
+        className='w-10 h-10 rounded-md flex items-center justify-center animate-pulse'
+        aria-label='Loading theme'>
+        <div className='h-5 w-5 rounded-full border-2 border-muted-foreground border-t-transparent animate-spin' />
       </button>
     );
   }
