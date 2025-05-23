@@ -1,24 +1,121 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Nikan Group Test
 
-## Getting Started
+A modern, performant, and feature-rich blog application built with cutting-edge web technologies.
 
-First, run the development server:
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
+🌐 [Live Demo](https://nikangroup-test.vercel.app/) | 📦 [GitHub Repository](https://github.com/abolfazlchaman/nikangroup-test)
+
+## 🚀 Features
+
+- ⚡️ Lightning-fast page loads with Next.js 15 App Router
+- 🎨 Beautiful, responsive UI with Material-UI v7 and Tailwind CSS
+- 🌓 Dark/Light mode with system preference sync
+- 🔍 Real-time search functionality
+- 📱 Mobile-first design approach
+- 🖼️ Dynamic image loading with blur placeholders
+- 🔄 Infinite scroll pagination
+- ✨ Modern image modal with zoom capabilities
+- 🧪 Comprehensive test coverage with Vitest
+- 🎯 Type-safe development with TypeScript
+- 📦 Efficient package management with pnpm
+
+## 🛠️ Tech Stack
+
+- **Framework:** Next.js 15 (App Router)
+- **Language:** TypeScript
+- **UI Libraries:**
+  - Material-UI v7
+  - Tailwind CSS
+  - Next Themes
+- **State Management:** React Hooks
+- **Testing:**
+  - Vitest
+  - React Testing Library
+  - Jest DOM
+- **Development Tools:**
+  - ESLint
+  - PostCSS
+  - Turbopack
+- **Package Manager:** pnpm
+
+## 🚀 Getting Started
+
+1. Clone the repository:
 ```bash
-npm run dev
-# or
-yarn dev
-# or
+git clone https://github.com/abolfazlchaman/nikangroup-test.git
+```
+
+2. Install dependencies:
+```bash
+pnpm install
+```
+
+3. Run the development server:
+```bash
 pnpm dev
-# or
-bun dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🧪 Testing
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Run the test suite:
+```bash
+pnpm test
+```
+
+For UI testing:
+```bash
+pnpm test:ui
+```
+
+For coverage report:
+```bash
+pnpm test:coverage
+```
+
+## 📝 API Routes
+
+- `GET /api/posts` - Fetch paginated blog posts
+- `GET /api/posts/search` - Search posts with query parameters
+- `GET /api/posts/[id]` - Fetch single post by ID
+
+## 🎨 Design Features
+
+- Responsive layout with grid system
+- Custom color scheme with CSS variables
+- System-aware dark mode
+- Optimized images with Next.js Image component
+- Beautiful transitions and animations
+- Accessible UI components
+
+## 🔧 Development Features
+
+- Hot Module Replacement with Turbopack
+- Type-safe development with TypeScript
+- Comprehensive ESLint configuration
+- Automated testing setup
+- Git-friendly configuration
+
+## 📄 License
+
+This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
+
+### What you can do with this project:
+- ✅ Commercial use
+- ✅ Modification
+- ✅ Distribution
+- ✅ Private use
+- ✅ Sublicense to others
+
+### Requirements:
+- ℹ️ Include the original license and copyright notice in any copy of the project
+- ℹ️ The authors provide no warranty or liability for the code
+
+## 🙏 Credits
+
+Created by [Abolfazl Chaman](https://github.com/abolfazlchaman)
 
 ## Learn More
 
