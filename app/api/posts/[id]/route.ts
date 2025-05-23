@@ -15,7 +15,7 @@ export async function GET(
       id: post.id,
       title: post.title,
       body: post.body,
-      imageUrl: `https://picsum.photos/seed/${post.id}/500/300`,
+      imageUrl: `https://picsum.photos/seed/${post.id}/1200/600`,
     };
 
     return NextResponse.json(postWithImage);
