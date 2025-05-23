@@ -125,6 +125,14 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
               className='dark:text-gray-300 whitespace-pre-line text-justify leading-relaxed'>
               {post.body}
             </Typography>
+            <Box className='flex justify-center mt-8 mb-4'>
+              <Button
+                variant='outlined'
+                onClick={() => router.push('/articles')}
+                className='dark:text-white dark:border-white hover:dark:bg-white/10'>
+                Back to Articles
+              </Button>
+            </Box>
           </CardContent>
         </Card>
       ) : (
