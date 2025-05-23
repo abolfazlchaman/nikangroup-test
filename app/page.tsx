@@ -15,9 +15,9 @@ export default function Home() {
           priority
         />
 
-        <div>
-          <h1>Nikan Group Test</h1>
-          <p>A test project for Nikan Group by Abolfazl Chaman</p>
+        <div className='text-center sm:text-left'>
+          <h1 className='text-foreground text-4xl font-bold mb-4'>Nikan Group Test</h1>
+          <p className='text-muted-foreground'>A test project for Nikan Group by Abolfazl Chaman</p>
         </div>
 
         <Link href='/articles'>
@@ -28,9 +28,6 @@ export default function Home() {
           </Button>
         </Link>
       </main>
-      <footer className='row-start-3 flex gap-6 flex-wrap items-center justify-center'>
-        footer placeholder
-      </footer>
     </div>
   );
 }
