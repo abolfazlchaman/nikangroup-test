@@ -6,7 +6,6 @@ import {
   Toolbar,
   IconButton,
   Box,
-  useTheme,
   Drawer,
   List,
   ListItem,
