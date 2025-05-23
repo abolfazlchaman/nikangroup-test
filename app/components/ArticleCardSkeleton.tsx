@@ -2,7 +2,9 @@ import { Card, CardContent, Skeleton } from '@mui/material';
 
 export function ArticleCardSkeleton() {
   return (
-    <Card className='dark:bg-gray-800'>
+    <Card
+      className='dark:bg-gray-800'
+      data-testid='article-skeleton'>
       <Skeleton
         variant='rectangular'
         height={200}

@@ -21,8 +21,8 @@ import {
 } from '@mui/material';
 import { useRouter, useSearchParams } from 'next/navigation';
 import type { BlogPost, PaginatedResponse } from '@/app/types/blog';
-import { ArticleCardSkeleton } from '@/app/components/ArticleCardSkeleton';
-import { SearchBar } from '@/app/components/SearchBar';
+import { ArticleCardSkeleton } from '../components/ArticleCardSkeleton';
+import { SearchBar } from '../components/SearchBar';
 import NextLink from 'next/link';
 
 // Cache for articles list
@@ -249,14 +249,15 @@ export default function ArticlesPage() {
                 <CardContent className='flex flex-col flex-grow'>
                   <Typography
                     variant='h6'
-                    className='dark:text-white'>
+                    component='h2'
+                    className='dark:text-white font-bold mb-2'>
                     {post.title}
                   </Typography>
                   <Typography
                     variant='body2'
                     color='text.secondary'
                     className='dark:text-gray-300 mt-2 flex-grow'>
-                    {post.body.substring(0, 100)}...
+                    {post.body ? `${post.body.substring(0, 100)}...` : 'No content available'}
                   </Typography>
                   <Box className='mt-4'>
                     <Button
