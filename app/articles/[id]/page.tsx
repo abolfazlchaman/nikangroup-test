@@ -78,12 +78,6 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
             component={NextLink}
             href='/'
             className='dark:text-gray-400 hover:dark:text-white'>
-            Home
-          </Link>
-          <Link
-            component={NextLink}
-            href='/articles'
-            className='dark:text-gray-400 hover:dark:text-white'>
             Articles
           </Link>
           {loading ? (
@@ -162,7 +156,7 @@ export default function ArticlePage({ params }: { params: Promise<{ id: string }
             <Box className='flex justify-center mt-8 mb-4'>
               <Button
                 variant='outlined'
-                onClick={() => router.push('/articles')}
+                onClick={() => router.push('/')}
                 className='dark:text-white dark:border-white hover:dark:bg-white/10'>
                 Back to Articles
               </Button>

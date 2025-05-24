@@ -3,6 +3,7 @@ export interface BlogPost {
   title: string;
   body: string;
   imageUrl: string;
+  createdAt?: string;
 }
 
 export interface PaginatedResponse {
