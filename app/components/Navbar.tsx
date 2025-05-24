@@ -73,10 +73,7 @@ export default function Navbar() {
     setMobileOpen(!mobileOpen);
   };
 
-  const navItems = [
-    { label: 'Home', path: '/' },
-    { label: 'Articles', path: '/articles' },
-  ];
+  const navItems = [{ label: 'Articles', path: '/' }];
 
   const drawer = (
     <Box
@@ -147,7 +144,7 @@ export default function Navbar() {
           Nikangroup
         </Typography>
         <Box className='hidden md:flex gap-2 items-center'>
-          {pathname !== '/articles' && (
+          {pathname !== '/' && (
             <SearchBar
               variant='navbar'
               className='w-64'

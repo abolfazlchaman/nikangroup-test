@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from 'react';
 import { TextField, Autocomplete, CircularProgress, Box, Typography, Paper } from '@mui/material';
-import { useRouter } from 'next/navigation';
+import { useRouter, useSearchParams } from 'next/navigation';
 import type { BlogPost } from '@/app/types/blog';
 import SearchIcon from '@mui/icons-material/Search';
 
@@ -17,12 +17,24 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
   const [options, setOptions] = useState<BlogPost[]>([]);
   const [loading, setLoading] = useState(false);
   const [total, setTotal] = useState(0);
+  const [hasSearched, setHasSearched] = useState(false);
   const router = useRouter();
+  const searchParams = useSearchParams();
   const searchTimeout = useRef<NodeJS.Timeout | undefined>(undefined);
+
+  // Initialize query from URL search params
+  useEffect(() => {
+    const searchQuery = searchParams.get('search');
+    if (searchQuery) {
+      setQuery(searchQuery);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (query.length < 2) {
       setOptions([]);
+      setTotal(0);
+      setHasSearched(false);
       return;
     }
 
@@ -30,20 +42,33 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
       clearTimeout(searchTimeout.current);
     }
 
+    setHasSearched(false);
     searchTimeout.current = setTimeout(async () => {
       setLoading(true);
       try {
         const response = await fetch(`/api/posts/search?q=${encodeURIComponent(query)}&limit=5`);
+        if (!response.ok) {
+          throw new Error('Search request failed');
+        }
         const data = await response.json();
         setOptions(data.posts);
         setTotal(data.total);
+        setHasSearched(true);
       } catch (error) {
         console.error('Search failed:', error);
         setOptions([]);
+        setTotal(0);
+        setHasSearched(true);
       } finally {
         setLoading(false);
       }
     }, 300);
+
+    return () => {
+      if (searchTimeout.current) {
+        clearTimeout(searchTimeout.current);
+      }
+    };
   }, [query]);
 
   const handleOptionClick = (post: BlogPost) => {
@@ -53,7 +78,7 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
 
   const handleSearch = () => {
     if (query.trim()) {
-      router.push(`/articles?search=${encodeURIComponent(query)}`);
+      router.push(`/articles?search=${encodeURIComponent(query.trim())}`);
       setOpen(false);
     }
   };
@@ -65,26 +90,36 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
     if (query.length < 2) {
       return 'Start typing to search...';
     }
-    if (total === 0) {
+    if (hasSearched && total === 0) {
       return 'No results found';
     }
     return '';
   };
 
+  const escapeRegExp = (string: string) => {
+    return string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  };
+
   const highlightText = (text: string, query: string) => {
     if (!query) return text;
-    const parts = text.split(new RegExp(`(${query})`, 'gi'));
-    return parts.map((part, i) =>
-      part.toLowerCase() === query.toLowerCase() ? (
-        <span
-          key={i}
-          className='bg-primary/20 text-primary font-medium'>
-          {part}
-        </span>
-      ) : (
-        part
-      ),
-    );
+    try {
+      const escapedQuery = escapeRegExp(query);
+      const parts = text.split(new RegExp(`(${escapedQuery})`, 'gi'));
+      return parts.map((part, i) =>
+        part.toLowerCase() === query.toLowerCase() ? (
+          <span
+            key={i}
+            className='bg-primary/20 text-primary font-medium'>
+            {part}
+          </span>
+        ) : (
+          part
+        ),
+      );
+    } catch (error) {
+      console.error('Error highlighting text:', error);
+      return text;
+    }
   };
 
   return (
@@ -106,6 +141,7 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
             placeholder='Search articles...'
             variant={variant === 'navbar' ? 'outlined' : 'filled'}
             size={variant === 'navbar' ? 'small' : 'medium'}
+            value={query}
             onChange={(e) => setQuery(e.target.value)}
             onKeyDown={(e) => {
               if (e.key === 'Enter') {
@@ -139,7 +175,6 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
               },
               '& .MuiInputBase-root': {
                 backgroundColor: 'hsl(var(--accent))',
-
                 color: 'hsl(var(--foreground))',
                 '&:hover': {
                   backgroundColor: 'hsl(var(--accent))',
@@ -188,7 +223,7 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
                 <Typography
                   variant='body2'
                   className='text-muted-foreground'>
-                  {highlightText(option.body.substring(0, 60), query)}...
+                  {option.body ? highlightText(option.body.substring(0, 60), query) : ''}
                 </Typography>
               </Box>
             </Box>
@@ -204,7 +239,7 @@ export function SearchBar({ className = '', variant = 'page' }: SearchBarProps) 
               marginTop: '8px',
             }}>
             {children}
-            {total > 0 && (
+            {hasSearched && total > 0 && (
               <Box
                 sx={{
                   padding: '8px',
